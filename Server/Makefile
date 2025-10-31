@@ -1,7 +1,7 @@
 
 .PHONY: server clean run
 CC := g++
-CFLAG := -std=c++17 -Wall -Wextra -I./cpp-httplib
+CFLAG := -Wall -Wextra -I./cpp-httplib
 
 # link thư viện socket Windows
 LIBS := -lws2_32

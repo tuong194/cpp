@@ -1,5 +1,5 @@
-.PHONY: app server clean run-app run-server check # mấy cái này là lệnh ảo, không phải là file hay thư mục. Mục đích là để tránh trùng tên file hay thư mục
-
+# mấy cái này là lệnh ảo, không phải là file hay thư mục. Mục đích là để tránh trùng tên file hay thư mục
+.PHONY: app server clean run-app run-server check 
 
 PATH_BUILD := ./build
 
@@ -23,12 +23,12 @@ SERVER_EXE := $(PATH_BUILD)/server
 LIBS := -lws2_32 
 
 CC:=g++
-CFLAG:= -I$(PATH_INC)
-CFLAG_SERVER:= -std=c++17 -Wall -Wextra -I$(PATH_INC_SERVER)
+CFLAG:= -Wall -Wextra -I$(PATH_INC)
+CFLAG_SERVER:= -Wall -Wextra -I$(PATH_INC_SERVER)
 
 # CFLAG:= -std=c++17 -Wall -Wextra -I$(PATH_INC)
-# Wall (Warn all) : hiện tất cả cảnh báo 
-# Wextra : hiện thêm nhiều cảnh báo hơn nữa mà Wall ko hiện
+# -Wall (Warn all) : hiện tất cả cảnh báo 
+# -Wextra : hiện thêm nhiều cảnh báo hơn nữa mà Wall ko hiện
 
 #tạo thư mục nếu nó chưa tồn tại
 $(PATH_OBJ): 
