@@ -2,7 +2,7 @@
 #include "hello.h"
 
 void say_hello() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Hello, World hẹ hẹ!" << std::endl;
 }
 
 void Display::update(int x){
