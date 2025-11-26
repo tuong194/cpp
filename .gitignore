@@ -1,4 +1,4 @@
 build/
 .vscode/
-# App/build/
-# Server/build/
+App/build/
+Server/build/

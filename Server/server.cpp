@@ -208,7 +208,7 @@ std::function<void(const httplib::Request&, httplib::Response&)> serve_file(cons
             res.set_content(content, content_type);
         } else {
             res.status = 404;
-            res.set_content("File không tìm thấy: " + file_path, "text/plain");
+            res.set_content("File không tìm thấy: " + file_path, "text/plain; charset=utf-8");
         }
     };
 }
@@ -217,16 +217,16 @@ int main() {
     httplib::Server svr;
 
     // Endpoint để phục vụ file index.html
-    svr.Get("/", serve_file("UI\\index.html", "text/html"));
+    svr.Get("/", serve_file("..\\UI\\index.html", "text/html"));
     // Endpoint để phục vụ các file khác như CSS và JavaScript
-    svr.Get("/styles.css", serve_file("UI\\styles.css", "text/css"));
-    svr.Get("/script.js", serve_file("UI\\script.js", "application/javascript"));
+    svr.Get("/styles.css", serve_file("..\\UI\\styles.css", "text/css"));
+    svr.Get("/script.js", serve_file("..\\UI\\script.js", "application/javascript"));
 
     // Endpoint để lấy dữ liệu từ file CSV và trả về dưới dạng JSON
     svr.Get("/data", [](const httplib::Request& _req, httplib::Response& res) {
         // Ép sử dụng _req để tránh cảnh báo unused parameter
         (void)_req;
-        std::string json_content = csv_to_json("Data\\Database.csv");
+        std::string json_content = csv_to_json("..\\Data\\Database.csv");
         if (json_content.find("error") != std::string::npos) {
             res.status = 404;
             res.set_content(json_content, "application/json");
@@ -240,13 +240,15 @@ int main() {
 
     // Tự động mở trình duyệt trên Windows
     #ifdef _WIN32
-        system("start http://localhost:8080");
+        system("start http://localhost:8080"); 
     #elif __APPLE__
         system("open http://localhost:8080");
     #endif
 
     // Lắng nghe trên cổng 8080
     svr.listen("localhost", 8080);
+    // svr.listen("0.0.0.0", 8080); //cùng Wifi hoặc cùng LAN là mở được. Ví dụ: http://192.168.1.12:8080/
+    
 
     return 0;
 }
