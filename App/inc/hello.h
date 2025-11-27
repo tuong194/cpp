@@ -1,7 +1,0 @@
-#ifndef B6BAAFF0_63CD_496F_B091_EF0218030E77
-#define B6BAAFF0_63CD_496F_B091_EF0218030E77
-
-
-void say_hello();
-
-#endif /*  */
