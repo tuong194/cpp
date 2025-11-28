@@ -17,12 +17,12 @@ KeyBoard::KeyBoard():is_listening(false){
         {13, SystemAttribute::ENTER}, // '\n' cho phím Enter trên macOS
         {110, SystemAttribute::N},    
         {109, SystemAttribute::M}};   
-    std::fill_n(key_state, static_cast<Underlying_SystemAttribute>(SystemAttribute::UNKNOWN), false);
+    // std::fill_n(key_state, static_cast<Underlying_SystemAttribute>(SystemAttribute::UNKNOWN), false);
 }
 
 void KeyBoard::listenKeyBoard() {
     if (is_listening) return;
-    logInfo("Start listen keyboard");
+    LOGI("Start listen keyboard");
     is_listening = true;
     // thực chất khi gọi processKeyBoard() trình biên dịch sẽ dịch thành processKeyBoard(this)
     std::thread t(&KeyBoard::processKeyBoard, this); 
@@ -30,13 +30,13 @@ void KeyBoard::listenKeyBoard() {
     - join(): sẽ chờ luồng con kết thúc mới chạy tiếp, đồng thời sẽ giải phóng tài nguyên luồng con đúng cách
     - detach(): tách luồng con ra chạy độc lập, luồng chính không chờ nữa. Tài nguyên tự giải phóng khi luồng con kết thúc
     */
-    t.join();
-    //t.detach();
+    // t.join();
+    t.detach();
 }
 void KeyBoard::stopListen(){
     if (is_listening)
     {
-        logInfo("Stopping keyboard listening...");
+        LOGI("Stopping keyboard listening...");
         is_listening = false;
     }
 }
@@ -57,19 +57,67 @@ void KeyBoard::processKeyBoard() {
             }
             
             auto it = key_map.find(current_press);
-            if(it != key_map.end()){
+            if(it != key_map.end() && current_press != last_press){
                 std::cout << "press: " << current_press  << " - " << (char)current_press << std::endl;
-                logInfo("key press: " + std::to_string(current_press) + " - " + std::to_string(static_cast<char>(current_press)));
-                SystemAttribute attr = it->second;
-                Underlying_SystemAttribute index = static_cast<Underlying_SystemAttribute>(attr);
-                key_state[index] = !key_state[index]; //toggle state
-
+                notify(it->second, true);
+                pressed_key.push_back(it->second);
+                last_press = current_press;
             }
         }else{
-
+            if(last_press != -1){
+                auto it = key_map.find(last_press);
+                if(it != key_map.end()){
+                    std::this_thread::sleep_for(std::chrono::milliseconds(200)); //giả lập nhả phím sau 200 ms
+                    std::cout << "release: " << last_press  << " - " << (char)last_press << std::endl;
+                    notify(it->second, false);
+                    pressed_key.erase(
+                        std::remove(pressed_key.begin(), pressed_key.end(), it->second),
+                        pressed_key.end()
+                    );
+                    last_press = -1;
+                }
+            }
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    logError("Stopped listening to keyboard");
+    LOGE("Stopped listening to keyboard");
 }
+
+void KeyBoard::attach(Observer* ob){
+    auto is_exits = [ob](const std::vector<Observer*>& obs){ 
+        return std::find(obs.begin(), obs.end(), ob) != obs.end();
+    };
+    if(is_exits(observers)) return;
+    else observers.push_back(ob);
+}
+
+void KeyBoard::detach(Observer* ob){
+    /* bản chất hàm remove chỉ dồn tất cả các phần từ khác ob về đầu vector
+       và trả về vùng nhớ rác (vùng nhớ mới của ob). ob không còn trong vùng hợp lệ nhưng vẫn nằm trong vector về mặt bộ nhớ.
+       ==> cần erase để xóa vùng nhớ rác đó khỏi vector
+       ==> bản chất std::remove(observers.begin(), observers.end(), ob) trả về trị trí đầu tiên cần xóa 
+    */
+    observers.erase(
+        std::remove(observers.begin(), observers.end(), ob),
+        observers.end()
+    );
+}
+
+int KeyBoard::notify(SystemAttribute key, bool is_press){
+    if(is_press){
+        for(auto& ob : observers){
+            ob->onKeyPress(key);
+        }
+    }else{
+        for(auto& ob : observers){
+            ob->onKeyRelease(key);
+        }
+    }
+    return 1;
+}
+
+
+
+
+

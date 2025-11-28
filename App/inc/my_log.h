@@ -4,9 +4,9 @@
 #include <iostream>
 #include <string>
 
-void logInfo(const std::string &msg);
-void logWarn(const std::string &msg);
-void logError(const std::string &msg);
-void logDebug(const std::string &msg);
+void LOGI(const std::string &msg);
+void LOGW(const std::string &msg);
+void LOGE(const std::string &msg);
+void LOGD(const std::string &msg);
 
 #endif /*  */
