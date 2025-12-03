@@ -6,7 +6,7 @@
 #include <vector>
 #include "Define.h"
 
-using Underlying_SystemAttribute = std::underlying_type_t<SystemAttribute>;
+// using Underlying_SystemAttribute = std::underlying_type_t<SystemAttribute>;
 
 
 class KeyBoard {

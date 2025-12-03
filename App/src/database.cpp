@@ -7,10 +7,49 @@
 #include "Define.h"
 
 #define DATA_PATH "..//Data//Database.csv"
+#define DATA_PATH_VINFAST "..//Data//dbVinfast.csv"
+#define DATA_PATH_TESLA   "..//Data//dbTesla.csv"
+
+void read_data(carBranch branch, std::map<carAttribute, int>& data_map){
+    std::string file_path;
+    switch (branch)
+    {
+    case carBranch::VINFAST:
+        file_path = DATA_PATH_VINFAST;
+        break;
+    case carBranch::TESLA:
+        file_path = DATA_PATH_TESLA;
+        break;
+    
+    default:
+        break;
+    }
+
+    std::ifstream file(file_path.c_str());
+    if (!file.is_open())
+    {
+        LOGE("Failed to open database file for reading ^-^ ");
+        return;
+    }
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        std::istringstream ss(line);
+        std::string key;
+        std::string value;
+        if (std::getline(ss, key, ',') && ss >> value)
+        {
+            carAttribute carAtt = Utils::string_to_enum<carAttribute>(key);
+            data_map[carAtt] = std::stoi(value);
+        }
+    }
+    file.close();        
+}
 
 database::database(KeyBoard &key_board){
     init_file_csv();
-    read_data();//test
+    read_data(); //test
     key_board.attach(this);
 }
 
@@ -32,21 +71,11 @@ int database::init_file_csv()
     return 0;
 }
 
-int database::onKeyPress(SystemAttribute key){
+int database::change_data(SystemAttribute key, std::string value){
     std::string key_str = Utils::enum_to_string(key);
     auto it =data_store.find(key_str);
     if(it != data_store.end()){
-        data_store[key_str] = "1";
-        write_data();
-        return 1;
-    }
-    return 0;
-}
-int database::onKeyRelease(SystemAttribute key){
-    std::string key_str = Utils::enum_to_string(key);
-    auto it =data_store.find(key_str);
-    if(it != data_store.end()){
-        data_store[key_str] = "0";
+        data_store[key_str] = value;
         write_data();
         return 1;
     }

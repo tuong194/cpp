@@ -10,7 +10,7 @@ int main() {
     KeyBoard kb;
     kb.listenKeyBoard();
     database db(kb);
-    db.read_data();
+
 
     while (1)
     {

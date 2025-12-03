@@ -58,7 +58,7 @@ void KeyBoard::processKeyBoard() {
             
             auto it = key_map.find(current_press);
             if(it != key_map.end() && current_press != last_press){
-                std::cout << "press: " << current_press  << " - " << (char)current_press << std::endl;
+                //std::cout << "press: " << current_press  << " - " << (char)current_press << std::endl;
                 notify(it->second, true);
                 pressed_key.push_back(it->second);
                 last_press = current_press;
@@ -68,7 +68,7 @@ void KeyBoard::processKeyBoard() {
                 auto it = key_map.find(last_press);
                 if(it != key_map.end()){
                     std::this_thread::sleep_for(std::chrono::milliseconds(200)); //giả lập nhả phím sau 200 ms
-                    std::cout << "release: " << last_press  << " - " << (char)last_press << std::endl;
+                    //std::cout << "release: " << last_press  << " - " << (char)last_press << std::endl;
                     notify(it->second, false);
                     pressed_key.erase(
                         std::remove(pressed_key.begin(), pressed_key.end(), it->second),
@@ -114,7 +114,7 @@ int KeyBoard::notify(SystemAttribute key, bool is_press){
             ob->onKeyRelease(key);
         }
     }
-    return 1;
+    return 0;
 }
 
 

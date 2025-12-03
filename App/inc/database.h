@@ -10,6 +10,7 @@ private:
     std::map<std::string, std::string> data_store;
     void write_data_default();
     int init_file_csv();
+    int change_data(SystemAttribute key, std::string value);
 public:
     database(KeyBoard &key_board);
     ~database() = default;
@@ -18,5 +19,12 @@ public:
     void read_data();
     void write_data();
 };
+
+inline int database::onKeyPress(SystemAttribute key){
+    return change_data(key, "1");
+}
+inline int database::onKeyRelease(SystemAttribute key){
+    return change_data(key, "0");
+}
 
 #endif /*  */

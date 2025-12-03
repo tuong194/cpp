@@ -5,6 +5,19 @@
 #include <type_traits>
 #include <string>
 
+enum class ERR_CODE
+{
+    SUCCESS = 0,
+    FAILURE = -1,
+};
+
+enum class AirConditionStt{
+    OFF = 0,
+    ON = 1,
+    UP,
+    DOWN
+};
+
 enum class DriveMode
 {
     ECO,  // Chế độ tiết kiệm năng lượng
@@ -15,16 +28,16 @@ enum class SystemAttribute
 {
     VEHICLE_SPEED, // tốc độ xe
     DRIVE_MODE, // chế độ lái
-    GEAR_SHIFT, // 
-    TURN_SIGNAL,
-    ROUTE_PLANNER,
+    GEAR_SHIFT, // số
+    TURN_SIGNAL, // xi nhan
+    ROUTE_PLANNER, // quãng đường dự kiến
     BATTERY_LEVEL,// phần trăm pin
     ODOMETER, // công tơ mét
     BRAKE, // phanh
-    ACCELERATOR,
+    ACCELERATOR, // ga
     BATTERY_TEMP, // nhiệt độ pin
-    AC_CONTROL,
-    AC_STATUS,
+    AC_CONTROL, // điều hòa
+    AC_STATUS, // trạng thái điều hòa
     WIND_LEVEL, // tốc độ gió
 
     UP,  // tăng nhiệt độ
@@ -39,8 +52,34 @@ enum class SystemAttribute
     UNKNOWN
 };
 
-namespace Utils {
+enum class carBranch
+{
+    VINFAST,
+    TESLA
+};
 
+enum class carAttribute
+{
+    ENGINE_TOTAL,     //Số lượng động cơ
+    BATTERY_CAPACITY, //Kwh -> dung luong pin
+    BATTERY_VOLTAGE,  //V   -> dien ap pin
+    MAX_RANGE,        //km  -> quang duong toi da di duoc neu day pin
+    MAX_TORQUE,       //Nm  -. momen xoan
+    MAX_ENGINE_POWER, //kW  -> cong suat toi da cua dong co
+    MAX_AC_POWER,     //W   -> cong suat toi da cua dieu hoa   
+    MAX_SPEED_SPORT,  //Km/h-> toc do toi da o che do sport
+    MAX_SPEED_ECO,    //Km/h-> toc do toi da o che do sport
+    MAX_RPM,          //rotation per minute -> so vong quay 
+    WEIGHT,           //kg -> khoi luong khong tai cua xe
+    WHEEL_RADIUS,     //cm -> ban kinh banh xe
+    AC_TEMP_MAX,      //do c -> nhiet do toi da dieu ching duoc tren dieu hoa
+    AC_TEMP_MIN,      //do c -> nhiet do nho nhat dieu chinh duoc tren dieu hoa
+    WIND_LEVEL_MAX    //muc gio manh nhat tren dieu hoa
+};
+
+
+
+namespace Utils {
     /**
      * @brief chuyển đổi enum sang kiểu nguyên thủy underlying type (thường là int)
      * ko ném exeption
@@ -131,6 +170,25 @@ namespace Utils {
             else if (str == "SPORT") return DriveMode::SPORT;
             else return DriveMode::ECO; // default
         }
+        else if constexpr (std::is_same_v<EnumType, carAttribute>) {
+            if (str == "ENGINE_TOTAL") return carAttribute::ENGINE_TOTAL;
+            else if (str == "BATTERY_CAPACITY") return carAttribute::BATTERY_CAPACITY;
+            else if (str == "BATTERY_VOLTAGE") return carAttribute::BATTERY_VOLTAGE;
+            else if (str == "MAX_RANGE") return carAttribute::MAX_RANGE;
+            else if (str == "MAX_TORQUE") return carAttribute::MAX_TORQUE;
+            else if (str == "MAX_ENGINE_POWER") return carAttribute::MAX_ENGINE_POWER;
+            else if (str == "MAX_AC_POWER") return carAttribute::MAX_AC_POWER;
+            else if (str == "MAX_SPEED_SPORT") return carAttribute::MAX_SPEED_SPORT;
+            else if (str == "MAX_SPEED_ECO") return carAttribute::MAX_SPEED_ECO;
+            else if (str == "MAX_RPM") return carAttribute::MAX_RPM;
+            else if (str == "WEIGHT") return carAttribute::WEIGHT;
+            else if (str == "WHEEL_RADIUS") return carAttribute::WHEEL_RADIUS;
+            else if (str == "AC_TEMP_MAX") return carAttribute::AC_TEMP_MAX;
+            else if (str == "AC_TEMP_MIN") return carAttribute::AC_TEMP_MIN;
+            else if (str == "WIND_LEVEL_MAX") return carAttribute::WIND_LEVEL_MAX;
+            // else throw std::invalid_argument("Invalid string for carAttribute enum conversion");
+        }
+
         throw std::invalid_argument("Unsupported enum type for string conversion");
     }
 }
