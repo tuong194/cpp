@@ -11,11 +11,10 @@ enum class ERR_CODE
     FAILURE = -1,
 };
 
-enum class AirConditionStt{
-    OFF = 0,
-    ON = 1,
-    UP,
-    DOWN
+enum class TurnSignalState{
+    NO_SIG = 0,
+    LEFT = 1,
+    RIGHT = 1
 };
 
 enum class DriveMode

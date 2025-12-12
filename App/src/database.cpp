@@ -4,7 +4,6 @@
 #include <sstream>
 
 #include "my_log.h"
-#include "Define.h"
 
 #define DATA_PATH "..//Data//Database.csv"
 #define DATA_PATH_VINFAST "..//Data//dbVinfast.csv"
@@ -47,10 +46,10 @@ void read_data(carBranch branch, std::map<carAttribute, int>& data_map){
     file.close();        
 }
 
-database::database(KeyBoard &key_board){
+database::database(){
     init_file_csv();
     read_data(); //test
-    key_board.attach(this);
+    // key_board.attach(this);
 }
 
 
@@ -71,16 +70,15 @@ int database::init_file_csv()
     return 0;
 }
 
-int database::change_data(SystemAttribute key, std::string value){
-    std::string key_str = Utils::enum_to_string(key);
-    auto it =data_store.find(key_str);
+int database::write_data(std::string key, std::string value){
+    auto it =data_store.find(key);
     if(it != data_store.end()){
-        data_store[key_str] = value;
-        write_data();
+        data_store[key] = value;
+        write_all_data();
         return 1;
     }
     return 0;
-}
+} 
 
 void database::write_data_default()
 {
@@ -120,7 +118,7 @@ void database::write_data_default()
     }
     file.close(); 
 }
-void database::write_data()
+void database::write_all_data()
 {
     // std::ofstream file(DATA_PATH, std::ios::app); // ghi tiếp vào cuối file
     std::ofstream file(DATA_PATH); // ~ std::ofstream file(DATA_PATH, std::ios::out | std::ios::trunc): open file và xóa sạch nội dung cũ

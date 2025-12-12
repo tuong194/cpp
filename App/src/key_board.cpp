@@ -58,7 +58,7 @@ void KeyBoard::processKeyBoard() {
             
             auto it = key_map.find(current_press);
             if(it != key_map.end() && current_press != last_press){
-                //std::cout << "press: " << current_press  << " - " << (char)current_press << std::endl;
+                std::cout << "press: " << current_press  << " - " << (char)current_press << std::endl;
                 notify(it->second, true);
                 pressed_key.push_back(it->second);
                 last_press = current_press;

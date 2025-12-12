@@ -6,17 +6,19 @@
 #include "carModel.h"
 #include "database.h"
 
-class EngineControlUnit : public database
+class EngineControlUnit : public KeyBoard::Observer
 {
 private:
     DisplayManager display_manager; carModel car_model;
+    database db;
+
     std::string drive_mode;
     uint16_t speed;
     uint8_t battery_level, wind_level, temperature;
     bool ac_stt, is_brake_pedal, is_accelerator_pedal;
-    int update_data();
+
 public:
-    EngineControlUnit(KeyBoard &key_board, DisplayManager &display_manager, carModel car_);
+    EngineControlUnit(KeyBoard &key_board, carModel car_);
     ~EngineControlUnit(){};
 
     int onKeyPress(SystemAttribute key) override;
@@ -38,9 +40,6 @@ public:
     void setBrakePedal(bool is_pressed);
     void setAcceleratorPedal(bool is_pressed);
 
-    int calculateSpeed();
-    int changeDriveMode();
-    int adjustACTemperature(AirConditionStt action);
 };
 
 

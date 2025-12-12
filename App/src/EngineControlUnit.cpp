@@ -1,12 +1,13 @@
 #include "EngineControlUnit.h"
 #include "my_log.h"
 
-EngineControlUnit::EngineControlUnit(KeyBoard &key_board, DisplayManager &display_manager, carModel car_):database(key_board),display_manager(display_manager), car_model(car_),
-    drive_mode("ECO"), speed(0), battery_level(0), wind_level(0),
+EngineControlUnit::EngineControlUnit(KeyBoard &key_board, carModel car_):car_model(car_),
+    drive_mode("ECO"), speed(0), battery_level(0), wind_level(0),temperature(22),
     ac_stt(false), is_brake_pedal(false), is_accelerator_pedal(false)
 {
     LOGI("EngineControlUnit initialized");
     key_board.attach(this);
+    key_board.attach(&db); 
 }
 
 
@@ -43,11 +44,14 @@ int EngineControlUnit::onKeyPress(SystemAttribute key){
     {
     case SystemAttribute::UP:{
         if(temperature < car_model.getTempMax()) temperature++;
+        db.write_data(SystemAttribute::AC_CONTROL, std::to_string(temperature));
         break;
     }
-    case SystemAttribute::DOWN:
+    case SystemAttribute::DOWN:{
         if(temperature > car_model.getTempMin()) temperature--;
+        db.write_data(SystemAttribute::AC_CONTROL, std::to_string(temperature));
         break;
+    }
     case SystemAttribute::RIGHT:
         break;
     case SystemAttribute::SPACE:
@@ -62,4 +66,5 @@ int EngineControlUnit::onKeyPress(SystemAttribute key){
     default:
         break;
     }
+    return 0;
 }
